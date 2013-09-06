@@ -8,8 +8,20 @@
 
 ```javascript
 router = new Router;
+// 方式一
 router.add({route: "#!/book/:id", callback: function(id) {console.log(id)}, context: this});
-router.add({route: "#!/p:id", callback: function(id) {console.log(id)}});
+// 方式二
+routes = {
+    "#!/book/:id": function(id) {console.log(id)},
+    "#!/shelf/:id": function(id) {console.log(id)}
+}
+router.add(routes);
+// 方式三
+routes = [
+    {route: "#!/p:id", callback: function(id) {console.log(id)},
+    {route: "#!/img:id", callback: function(id) {console.log(id)}
+];
+router.add(routes);
 router.dispatch();
 ```
 
@@ -24,18 +36,6 @@ route = {
     }
 };
 router.add(route);
-router.dispatch();
-```
-
-### 增加多条记录
-
-```javascript
-router = new Router;
-routes = [
-    {route: "#!/book/:id", callback: function(id) {console.log(id)}, context: this},
-    {route: "#!/shelf/:id", callback: function(id) {console.log(id)}, context: this}
-];
-router.add(routes);
 router.dispatch();
 ```
 

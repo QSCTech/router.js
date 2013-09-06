@@ -35,6 +35,9 @@ class Router
     if Object.prototype.toString.call(arg) is "[object Array]"
       @add elem for elem in arg
       return
+    unless arg.route? && arg.callback?
+      @add {route: key, callback: value} for key, value of arg
+      return
     {route, callback, context} = arg
     context = window unless context?
     # 解析路由规则
