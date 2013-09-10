@@ -35,11 +35,21 @@ Router = (function() {
 
 
   Router.prototype.add = function(arg) {
-    var callback, context, elem, regexp, route, _i, _len;
+    var callback, context, elem, key, regexp, route, value, _i, _len;
     if (Object.prototype.toString.call(arg) === "[object Array]") {
       for (_i = 0, _len = arg.length; _i < _len; _i++) {
         elem = arg[_i];
         this.add(elem);
+      }
+      return;
+    }
+    if (!((arg.route != null) && (arg.callback != null))) {
+      for (key in arg) {
+        value = arg[key];
+        this.add({
+          route: key,
+          callback: value
+        });
       }
       return;
     }
@@ -66,20 +76,17 @@ Router = (function() {
 
 
   Router.prototype.dispatch = function() {
-    var args, path, route, _i, _len, _ref, _results;
+    var args, path, route, _i, _len, _ref;
     path = window.location.hash.toString();
     _ref = this.routes;
-    _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       route = _ref[_i];
       if (route.regexp.test(path)) {
         args = route.regexp.exec(path).slice(1);
-        _results.push(route.callback.apply(route.context, args));
-      } else {
-        _results.push(void 0);
+        route.callback.apply(route.context, args);
+        return;
       }
     }
-    return _results;
   };
 
   return Router;

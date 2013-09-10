@@ -67,3 +67,4 @@ class Router
       if route.regexp.test path
         args = route.regexp.exec(path).slice(1) # 取出正则匹配结果列表
         route.callback.apply route.context, args
+        return
