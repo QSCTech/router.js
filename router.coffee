@@ -10,6 +10,9 @@ Lincensed under the MIT License
 class Router
 
   constructor: ->
+    # 事件对象
+    @events = {}
+
     # 路由存储对象
     @routes = []
 
@@ -27,6 +30,27 @@ class Router
       window.addEventListener "hashchange", => @dispatch()
     else # IE
       window.attachEvent "hashchange", => @dispatch()
+
+  ###
+  Attach callback on router event
+
+  @param [String] event
+  @param [Function] callback
+  ###
+  on: (event, callback) ->
+    @events[event] = {callbacks: []} unless @events[event]?
+    @events[event].callbacks.push callback
+
+  ###
+  Trigger event
+
+  @param [String] event
+  @param [Object] args
+  ###
+  trigger: (event, args) ->
+    if @events[event]?
+      for callback in @events[event].callbacks
+        callback args
 
   ###
   增加一条路由绑定
@@ -62,9 +86,11 @@ class Router
   分发路由
   ###
   dispatch: ->
+    @trigger 'dispatch'
     path = window.location.hash.toString()
     for route in @routes
       if route.regexp.test path
         args = route.regexp.exec(path).slice(1) # 取出正则匹配结果列表
         route.callback.apply route.context, args
         return
+    @trigger '404'
