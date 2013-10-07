@@ -94,3 +94,5 @@ class Router
         route.callback.apply route.context, args
         return
     @trigger '404'
+
+@Router = Router
